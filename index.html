@@ -15,12 +15,14 @@
             margin: 0;
             color: white;
             overflow: hidden;
+            position: relative;
         }
         .container {
             text-align: center;
             padding: 1rem;
             width: 100%;
-            max-width: 600px;
+            max-width: 800px;
+            z-index: 1;
         }
         h1 {
             font-size: clamp(1.5rem, 5vw, 2.5rem);
@@ -31,8 +33,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px;
-            flex-wrap: nowrap; /* Memaksa tetap berdampingan */
+            gap: 30px;
+            flex-wrap: nowrap;
         }
         .square {
             width: clamp(120px, 40vw, 200px);
@@ -43,20 +45,17 @@
             justify-content: center;
             align-items: center;
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
             overflow: hidden;
+            flex-shrink: 0;
             position: relative;
-            flex-shrink: 0; /* Mencegah kotak gepeng */
-        }
-        .square:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
         }
         .square img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            pointer-events: none;
         }
         .me-text {
             color: #008080;
@@ -65,16 +64,14 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            pointer-events: none;
         }
         .arrow {
             display: inline-block;
         }
-        .arrow-left {
-            animation: moveLeft 1.2s infinite ease-in-out;
-        }
-        .arrow-right {
-            animation: moveRight 1.2s infinite ease-in-out;
-        }
+        .arrow-left { animation: moveLeft 1.2s infinite ease-in-out; }
+        .arrow-right { animation: moveRight 1.2s infinite ease-in-out; }
+        
         @keyframes moveLeft {
             0%, 100% { transform: translateX(0); }
             50% { transform: translateX(8px); }
@@ -86,26 +83,32 @@
         
         .nav-link {
             display: inline-block;
-            margin-top: 30px;
+            margin-top: 50px;
             color: rgba(255,255,255,0.7);
             text-decoration: none;
             font-size: 0.8rem;
             transition: color 0.2s;
         }
+
+        /* Posisi absolut untuk pergerakan Haechan */
+        #haechan-box.moved {
+            position: fixed;
+            z-index: 100;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Who do you love more?</h1>
+    <div class="container" id="main-container">
+        <h1 id="question">Who do you love more?</h1>
         
         <div class="choices">
             <!-- Kotak 1: Haechan -->
-            <div class="square" onclick="location.href='bin.html'">
+            <div class="square" id="haechan-box">
                 <img src="https://static.wikia.nocookie.net/kboy-group/images/0/07/HAECHAN_icon.png" alt="Haechan">
             </div>
 
             <!-- Kotak 2: Me -->
-            <div class="square">
+            <div class="square" id="me-box">
                 <div class="me-text">
                     <span class="arrow arrow-left">&gt;</span>
                     <span>Me</span>
@@ -116,5 +119,49 @@
 
         <a href="bin.html" class="nav-link">Ke Halaman Musik 🎵</a>
     </div>
+
+    <script>
+        const haechan = document.getElementById('haechan-box');
+        const me = document.getElementById('me-box');
+        
+        let haechanScale = 1;
+        let meScale = 1;
+
+        haechan.addEventListener('click', () => {
+            // 1. Tambahkan class moved agar posisi menjadi fixed/absolute
+            haechan.classList.add('moved');
+
+            // 2. Hitung posisi acak
+            // Ukuran kotak saat ini
+            const rect = haechan.getBoundingClientRect();
+            const boxWidth = rect.width;
+            const boxHeight = rect.height;
+
+            // Batas layar (dikurangi ukuran kotak agar tidak terpotong)
+            const maxX = window.innerWidth - boxWidth;
+            const maxY = window.innerHeight - boxHeight;
+
+            const randomX = Math.max(0, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(0, Math.floor(Math.random() * maxY));
+
+            // 3. Update Skala
+            haechanScale *= 0.75; // Mengecil 25%
+            meScale *= 1.25;      // Membesar 25%
+
+            // 4. Terapkan posisi dan skala
+            haechan.style.left = randomX + 'px';
+            haechan.style.top = randomY + 'px';
+            haechan.style.transform = `scale(${haechanScale})`;
+            
+            me.style.transform = `scale(${meScale})`;
+
+            // Opsional: jika haechan terlalu kecil, hilangkan pertanyaannya
+            if (haechanScale < 0.2) {
+                document.getElementById('question').innerText = "I KNEW IT! ❤️";
+                haechan.style.opacity = "0";
+                haechan.style.pointerEvents = "none";
+            }
+        });
+    </script>
 </body>
 </html>
