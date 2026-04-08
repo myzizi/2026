@@ -11,7 +11,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
             color: white;
             overflow: hidden;
@@ -19,15 +19,21 @@
         }
         .container {
             text-align: center;
-            padding: 1rem;
+            padding: 2rem;
             width: 100%;
             max-width: 800px;
             z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.4s ease; /* Transisi untuk seluruh container */
         }
         h1 {
             font-size: clamp(1.5rem, 5vw, 2.5rem);
             margin-bottom: 2rem;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            transition: transform 0.4s ease;
         }
         .choices {
             display: flex;
@@ -123,6 +129,7 @@
     <script>
         const haechan = document.getElementById('haechan-box');
         const me = document.getElementById('me-box');
+        const question = document.getElementById('question');
         
         let haechanScale = 1;
         let meScale = 1;
@@ -132,12 +139,10 @@
             haechan.classList.add('moved');
 
             // 2. Hitung posisi acak
-            // Ukuran kotak saat ini
             const rect = haechan.getBoundingClientRect();
             const boxWidth = rect.width;
             const boxHeight = rect.height;
 
-            // Batas layar (dikurangi ukuran kotak agar tidak terpotong)
             const maxX = window.innerWidth - boxWidth;
             const maxY = window.innerHeight - boxHeight;
 
@@ -155,9 +160,15 @@
             
             me.style.transform = `scale(${meScale})`;
 
+            // 5. Dorong pertanyaan ke atas seiring Me membesar
+            // Kita pindahkan pertanyaan ke atas (translateY negatif)
+            const pushAmount = (meScale - 1) * 100; // Semakin besar Me, semakin tinggi pertanyaan naik
+            question.style.transform = `translateY(-${pushAmount}px)`;
+
             // Opsional: jika haechan terlalu kecil, hilangkan pertanyaannya
             if (haechanScale < 0.2) {
-                document.getElementById('question').innerText = "I KNEW IT! ❤️";
+                question.innerText = "I KNEW IT! ❤️";
+                question.style.transform = "translateY(0) scale(1.5)";
                 haechan.style.opacity = "0";
                 haechan.style.pointerEvents = "none";
             }
