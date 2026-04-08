@@ -116,6 +116,10 @@
             box-shadow: none;
             transform: scale(1) !important;
         }
+        body.final-state #haechan-box {
+            background: transparent !important;
+            box-shadow: none !important;
+        }
         body.final-state .nav-link {
             color: #008080;
         }
@@ -152,8 +156,12 @@
         let haechanScale = 1;
         let meScale = 1;
 
+        // Preload bin.png
+        const preloadImg = new Image();
+        preloadImg.src = 'bin.png';
+
         haechan.addEventListener('click', () => {
-            if (haechanScale < 0.2) return; // Stop jika sudah di final state
+            if (haechanScale < 0.25) return; // Stop jika sudah di final state
 
             haechan.classList.add('moved');
 
@@ -175,14 +183,14 @@
             const pushAmount = (meScale - 1) * 100;
             question.style.transform = `translateY(-${pushAmount}px)`;
 
-            // Final state logic
-            if (haechanScale < 0.2) {
+            // Final state logic (Triggered sooner)
+            if (haechanScale < 0.25) {
                 // 1. Center Haechan (Kecil)
                 haechan.style.left = '50%';
                 haechan.style.top = '50%';
                 haechan.style.transform = `translate(-50%, -50%) scale(${haechanScale})`;
                 
-                // 2. Change Image
+                // 2. Change Image (Should be instant due to preload)
                 hImg.src = 'bin.png';
 
                 // 3. Apply Final State Class
