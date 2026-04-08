@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Who Do You Love? - MyZizi 2026</title>
+    <title>For Zizi - MyZizi 2026</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -88,13 +88,28 @@
             50% { transform: translateX(-8px); }
         }
         
-        .nav-link {
-            display: inline-block;
-            margin-top: 50px;
-            color: rgba(255,255,255,0.7);
-            text-decoration: none;
-            font-size: 0.8rem;
-            transition: color 0.5s;
+        #checkmark {
+            display: none;
+            margin-left: 10px;
+        }
+
+        .birthday-btn {
+            display: none; /* Hidden by default */
+            margin-top: 40px;
+            padding: 12px 25px;
+            background: #ff69b4;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+            transition: transform 0.2s, background 0.2s;
+            font-size: 1rem;
+        }
+        .birthday-btn:hover {
+            transform: scale(1.05);
+            background: #ff1493;
         }
 
         #haechan-box.moved {
@@ -121,10 +136,59 @@
             background: transparent !important;
             box-shadow: none !important;
         }
-        body.final-state .nav-link {
-            color: #008080;
+        body.final-state .arrow { display: none !important; }
+        body.final-state #checkmark { display: inline-block !important; }
+        body.final-state .birthday-btn { 
+            display: inline-block; /* Show only in final state */
+            background: #008080;
+            box-shadow: 0 4px 15px rgba(0, 128, 128, 0.2);
+        }
+
+        /* Birthday Page Styles */
+        .birthday-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 100vh;
+            background: #fff0f5; /* Lavender Blush */
+            color: #d02090;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            text-align: center;
+        }
+        .bday-title {
+            font-size: clamp(2rem, 8vw, 4rem);
+            margin-top: 50px;
+            margin-bottom: 20px;
+            font-family: 'Dancing Script', cursive, serif;
+            animation: bounce 2s infinite;
+        }
+        .bday-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            max-width: 500px;
+            margin-bottom: 40px;
+            transform: rotate(-2deg);
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .music-footer {
+            width: 100%;
+            max-width: 600px;
+            margin-top: auto;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container" id="main-container">
@@ -140,13 +204,32 @@
                     <span class="arrow arrow-left">&gt;</span>
                     <span>Me</span>
                     <span class="arrow arrow-right">&lt;</span>
+                    <span id="checkmark">✅</span>
                 </div>
             </div>
         </div>
 
-        <a href="bin.html" class="nav-link">Ke Halaman Musik 🎵</a>
+        <button class="birthday-btn" id="bday-btn" onclick="triggerBirthdayState()">Happy Birthday Zizi 🎂</button>
     </div>
 
+    <!-- Birthday Screen (Hidden by default) -->
+    <div id="birthday-screen" class="birthday-screen">
+        <h1 class="bday-title">Happy Birthday Zizi! ✨</h1>
+        <div class="bday-card">
+            <p style="font-size: 1.2rem; line-height: 1.6;">
+                Semoga hari spesialmu ini seindah senyummu. <br>
+                Teruslah bersinar dan bahagia selalu! 💖
+            </p>
+            <p style="font-style: italic; margin-top: 20px; color: #888;">- With love -</p>
+        </div>
+        
+        <!-- SoundCloud Player -->
+        <div class="music-footer">
+            <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2166811689&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
         const haechan = document.getElementById('haechan-box');
         const hImg = document.getElementById('haechan-img');
@@ -156,22 +239,64 @@
         
         let haechanScale = 1;
         let meScale = 1;
+        let isFinal = false;
 
         // Preload bin.png
         const preloadImg = new Image();
         preloadImg.src = 'bin.png';
 
-        haechan.addEventListener('click', () => {
-            if (haechanScale < 0.25) return; // Stop jika sudah di final state
+        const triggerFinalState = () => {
+            if (isFinal) return;
+            isFinal = true;
 
+            const finalHScale = Math.min(haechanScale, 0.25);
             haechan.classList.add('moved');
+            haechan.style.left = '50%';
+            haechan.style.top = '50%';
+            haechan.style.transform = `translate(-50%, -50%) scale(${finalHScale})`;
+            
+            hImg.src = 'bin.png';
+            body.classList.add('final-state');
+            question.innerText = "I KNEW IT! ❤️";
+            question.style.transform = "translateY(-50px)";
 
+            setTimeout(() => {
+                haechan.style.opacity = "0";
+                haechan.style.pointerEvents = "none";
+            }, 1500);
+        };
+
+        const triggerBirthdayState = () => {
+            document.getElementById('main-container').style.display = 'none';
+            if(haechan) haechan.style.display = 'none';
+            
+            const bdayScreen = document.getElementById('birthday-screen');
+            bdayScreen.style.display = 'flex';
+            document.body.style.background = '#fff0f5';
+            document.body.style.overflow = 'auto';
+
+            const end = Date.now() + (3 * 1000);
+            const colors = ['#ff69b4', '#ffffff', '#008080'];
+
+            (function frame() {
+                confetti({
+                    particleCount: 3,
+                    angle: 60, spread: 55, origin: { x: 0 }, colors: colors
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120, spread: 55, origin: { x: 1 }, colors: colors
+                });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        };
+
+        haechan.addEventListener('click', () => {
+            if (isFinal) return;
+            haechan.classList.add('moved');
             const rect = haechan.getBoundingClientRect();
-            const maxX = window.innerWidth - rect.width;
-            const maxY = window.innerHeight - rect.height;
-
-            const randomX = Math.max(0, Math.floor(Math.random() * maxX));
-            const randomY = Math.max(0, Math.floor(Math.random() * maxY));
+            const randomX = Math.max(0, Math.floor(Math.random() * (window.innerWidth - rect.width)));
+            const randomY = Math.max(0, Math.floor(Math.random() * (window.innerHeight - rect.height)));
 
             haechanScale *= 0.75; 
             meScale *= 1.25;      
@@ -181,30 +306,13 @@
             haechan.style.transform = `scale(${haechanScale})`;
             me.style.transform = `scale(${meScale})`;
 
-            const pushAmount = (meScale - 1) * 100;
-            question.style.transform = `translateY(-${pushAmount}px)`;
+            question.style.transform = `translateY(-${(meScale - 1) * 100}px)`;
 
-            // Final state logic (Triggered sooner)
-            if (haechanScale < 0.25) {
-                // 1. Center Haechan (Kecil)
-                haechan.style.left = '50%';
-                haechan.style.top = '50%';
-                haechan.style.transform = `translate(-50%, -50%) scale(${haechanScale})`;
-                
-                // 2. Change Image (Should be instant due to preload)
-                hImg.src = 'bin.png';
+            if (haechanScale < 0.25) triggerFinalState();
+        });
 
-                // 3. Apply Final State Class
-                body.classList.add('final-state');
-                question.innerText = "I KNEW IT! ❤️";
-                question.style.transform = "translateY(-50px)";
-
-                // 4. Fade Out Haechan
-                setTimeout(() => {
-                    haechan.style.opacity = "0";
-                    haechan.style.pointerEvents = "none";
-                }, 1500);
-            }
+        me.addEventListener('click', () => {
+            triggerFinalState();
         });
     </script>
 </body>
