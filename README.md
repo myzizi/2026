@@ -1,3 +1,3 @@
-Copyright (c) [Year] [Your Name]. All rights reserved.
+Copyright (c) 2026 Farid. All rights reserved.
 
 This source code is provided for portfolio viewing purposes only. No part of this repository may be reproduced, distributed, or transmitted in any form or by any means, including photocopying, recording, or other electronic or mechanical methods, without the prior written permission of the author.
