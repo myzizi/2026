@@ -135,6 +135,7 @@
         body.final-state #haechan-box {
             background: transparent !important;
             box-shadow: none !important;
+            transition: all 1.5s ease-in-out !important; /* Diperlambat */
         }
         body.final-state .arrow { display: none !important; }
         body.final-state #checkmark { display: inline-block !important; }
@@ -249,21 +250,28 @@
             if (isFinal) return;
             isFinal = true;
 
+            // Tambahkan class final-state DULUAN agar transisi lambat aktif
+            body.classList.add('final-state');
+
+            // 1. Center Haechan (Kecil)
             const finalHScale = Math.min(haechanScale, 0.25);
             haechan.classList.add('moved');
             haechan.style.left = '50%';
             haechan.style.top = '50%';
             haechan.style.transform = `translate(-50%, -50%) scale(${finalHScale})`;
             
+            // 2. Change Image
             hImg.src = 'bin.png';
-            body.classList.add('final-state');
+
+            // 3. Update Text
             question.innerText = "I KNEW IT! ❤️";
             question.style.transform = "translateY(-50px)";
 
+            // 4. Fade Out Haechan (lebih lama karena pergerakannya melambat)
             setTimeout(() => {
                 haechan.style.opacity = "0";
                 haechan.style.pointerEvents = "none";
-            }, 1500);
+            }, 2500);
         };
 
         const triggerBirthdayState = () => {
