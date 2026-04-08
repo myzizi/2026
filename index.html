@@ -16,6 +16,7 @@
             color: white;
             overflow: hidden;
             position: relative;
+            transition: background-color 1s ease, color 1s ease;
         }
         .container {
             text-align: center;
@@ -27,13 +28,13 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: all 0.4s ease; /* Transisi untuk seluruh container */
+            transition: all 0.4s ease;
         }
         h1 {
             font-size: clamp(1.5rem, 5vw, 2.5rem);
             margin-bottom: 2rem;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            transition: transform 0.4s ease;
+            transition: all 1s ease;
         }
         .choices {
             display: flex;
@@ -62,6 +63,7 @@
             height: 100%;
             object-fit: cover;
             pointer-events: none;
+            transition: opacity 0.5s ease;
         }
         .me-text {
             color: #008080;
@@ -71,10 +73,9 @@
             align-items: center;
             gap: 8px;
             pointer-events: none;
+            transition: color 1s ease;
         }
-        .arrow {
-            display: inline-block;
-        }
+        .arrow { display: inline-block; }
         .arrow-left { animation: moveLeft 1.2s infinite ease-in-out; }
         .arrow-right { animation: moveRight 1.2s infinite ease-in-out; }
         
@@ -93,13 +94,30 @@
             color: rgba(255,255,255,0.7);
             text-decoration: none;
             font-size: 0.8rem;
-            transition: color 0.2s;
+            transition: color 0.5s;
         }
 
-        /* Posisi absolut untuk pergerakan Haechan */
         #haechan-box.moved {
             position: fixed;
             z-index: 100;
+        }
+
+        /* Final State Styles */
+        body.final-state {
+            background-color: white !important;
+            color: #008080 !important;
+        }
+        body.final-state h1 {
+            text-shadow: none;
+            font-weight: bold;
+        }
+        body.final-state #me-box {
+            background-color: white !important;
+            box-shadow: none;
+            transform: scale(1) !important;
+        }
+        body.final-state .nav-link {
+            color: #008080;
         }
     </style>
 </head>
@@ -108,12 +126,10 @@
         <h1 id="question">Who do you love more?</h1>
         
         <div class="choices">
-            <!-- Kotak 1: Haechan -->
             <div class="square" id="haechan-box">
-                <img src="https://static.wikia.nocookie.net/kboy-group/images/0/07/HAECHAN_icon.png" alt="Haechan">
+                <img id="haechan-img" src="https://static.wikia.nocookie.net/kboy-group/images/0/07/HAECHAN_icon.png" alt="Haechan">
             </div>
 
-            <!-- Kotak 2: Me -->
             <div class="square" id="me-box">
                 <div class="me-text">
                     <span class="arrow arrow-left">&gt;</span>
@@ -128,49 +144,57 @@
 
     <script>
         const haechan = document.getElementById('haechan-box');
+        const hImg = document.getElementById('haechan-img');
         const me = document.getElementById('me-box');
         const question = document.getElementById('question');
+        const body = document.body;
         
         let haechanScale = 1;
         let meScale = 1;
 
         haechan.addEventListener('click', () => {
-            // 1. Tambahkan class moved agar posisi menjadi fixed/absolute
+            if (haechanScale < 0.2) return; // Stop jika sudah di final state
+
             haechan.classList.add('moved');
 
-            // 2. Hitung posisi acak
             const rect = haechan.getBoundingClientRect();
-            const boxWidth = rect.width;
-            const boxHeight = rect.height;
-
-            const maxX = window.innerWidth - boxWidth;
-            const maxY = window.innerHeight - boxHeight;
+            const maxX = window.innerWidth - rect.width;
+            const maxY = window.innerHeight - rect.height;
 
             const randomX = Math.max(0, Math.floor(Math.random() * maxX));
             const randomY = Math.max(0, Math.floor(Math.random() * maxY));
 
-            // 3. Update Skala
-            haechanScale *= 0.75; // Mengecil 25%
-            meScale *= 1.25;      // Membesar 25%
+            haechanScale *= 0.75; 
+            meScale *= 1.25;      
 
-            // 4. Terapkan posisi dan skala
             haechan.style.left = randomX + 'px';
             haechan.style.top = randomY + 'px';
             haechan.style.transform = `scale(${haechanScale})`;
-            
             me.style.transform = `scale(${meScale})`;
 
-            // 5. Dorong pertanyaan ke atas seiring Me membesar
-            // Kita pindahkan pertanyaan ke atas (translateY negatif)
-            const pushAmount = (meScale - 1) * 100; // Semakin besar Me, semakin tinggi pertanyaan naik
+            const pushAmount = (meScale - 1) * 100;
             question.style.transform = `translateY(-${pushAmount}px)`;
 
-            // Opsional: jika haechan terlalu kecil, hilangkan pertanyaannya
+            // Final state logic
             if (haechanScale < 0.2) {
+                // 1. Center Haechan (Kecil)
+                haechan.style.left = '50%';
+                haechan.style.top = '50%';
+                haechan.style.transform = `translate(-50%, -50%) scale(${haechanScale})`;
+                
+                // 2. Change Image
+                hImg.src = 'bin.png';
+
+                // 3. Apply Final State Class
+                body.classList.add('final-state');
                 question.innerText = "I KNEW IT! ❤️";
-                question.style.transform = "translateY(0) scale(1.5)";
-                haechan.style.opacity = "0";
-                haechan.style.pointerEvents = "none";
+                question.style.transform = "translateY(-50px)";
+
+                // 4. Fade Out Haechan
+                setTimeout(() => {
+                    haechan.style.opacity = "0";
+                    haechan.style.pointerEvents = "none";
+                }, 1500);
             }
         });
     </script>
