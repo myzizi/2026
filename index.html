@@ -14,28 +14,29 @@
             height: 100vh;
             margin: 0;
             color: white;
+            overflow: hidden;
         }
         .container {
             text-align: center;
-            padding: 2rem;
+            padding: 1rem;
             width: 100%;
             max-width: 600px;
         }
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            margin-bottom: 2rem;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         .choices {
             display: flex;
-            justify-content: space-around;
+            justify-content: center;
             align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
+            gap: 15px;
+            flex-wrap: nowrap; /* Memaksa tetap berdampingan */
         }
         .square {
-            width: 200px;
-            height: 200px;
+            width: clamp(120px, 40vw, 200px);
+            height: clamp(120px, 40vw, 200px);
             background: white;
             border-radius: 15px;
             display: flex;
@@ -46,9 +47,10 @@
             cursor: pointer;
             overflow: hidden;
             position: relative;
+            flex-shrink: 0; /* Mencegah kotak gepeng */
         }
         .square:hover {
-            transform: translateY(-10px);
+            transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(0,0,0,0.3);
         }
         .square img {
@@ -58,34 +60,37 @@
         }
         .me-text {
             color: #008080;
-            font-size: 2rem;
+            font-size: clamp(1rem, 4vw, 2rem);
             font-weight: bold;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         .arrow {
             display: inline-block;
-            animation: moveArrows 1.5s infinite ease-in-out;
-        }
-        @keyframes moveArrows {
-            0%, 100% { transform: translateX(0); }
-            50% { transform: translateX(5px); }
         }
         .arrow-left {
-            animation-direction: reverse;
+            animation: moveLeft 1.2s infinite ease-in-out;
+        }
+        .arrow-right {
+            animation: moveRight 1.2s infinite ease-in-out;
+        }
+        @keyframes moveLeft {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(8px); }
+        }
+        @keyframes moveRight {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-8px); }
         }
         
         .nav-link {
             display: inline-block;
-            margin-top: 40px;
+            margin-top: 30px;
             color: rgba(255,255,255,0.7);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             transition: color 0.2s;
-        }
-        .nav-link:hover {
-            color: white;
         }
     </style>
 </head>
@@ -104,7 +109,7 @@
                 <div class="me-text">
                     <span class="arrow arrow-left">&gt;</span>
                     <span>Me</span>
-                    <span class="arrow">&lt;</span>
+                    <span class="arrow arrow-right">&lt;</span>
                 </div>
             </div>
         </div>
