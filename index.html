@@ -145,16 +145,17 @@
             box-shadow: 0 4px 15px rgba(0, 128, 128, 0.2);
         }
 
-        /* Birthday Page Styles */
+        /* Birthday Page Styles - CENTERED */
         .birthday-screen {
             display: none;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
             width: 100%;
             min-height: 100vh;
             background: #fff0f5;
             color: #d02090;
-            padding: 40px 20px;
+            padding: 20px;
             box-sizing: border-box;
             overflow-x: hidden;
             position: relative;
@@ -201,10 +202,10 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.2);
         }
 
-        .frame-tl { top: 40px; left: 40px; transform: rotate(-10deg); border-left: 4px solid #ffb6c1; }
-        .frame-tr { top: 40px; right: 40px; transform: rotate(10deg); border-right: 4px solid #87ceeb; }
-        .frame-bl { bottom: 100px; left: 40px; transform: rotate(8deg); border-left: 4px solid #dda0dd; }
-        .frame-br { bottom: 100px; right: 40px; transform: rotate(-8deg); border-right: 4px solid #98fb98; }
+        .frame-tl { top: 30px; left: 30px; transform: rotate(-10deg); border-left: 4px solid #ffb6c1; }
+        .frame-tr { top: 30px; right: 30px; transform: rotate(10deg); border-right: 4px solid #87ceeb; }
+        .frame-bl { bottom: 80px; left: 30px; transform: rotate(8deg); border-left: 4px solid #dda0dd; }
+        .frame-br { bottom: 80px; right: 30px; transform: rotate(-8deg); border-right: 4px solid #98fb98; }
 
         .photo-placeholder {
             width: 100%;
@@ -221,7 +222,7 @@
 
         .bday-title {
             font-size: clamp(2rem, 8vw, 4rem);
-            margin-top: 30px;
+            margin-top: 0;
             margin-bottom: 20px;
             font-family: 'Dancing Script', cursive, serif;
             animation: bounce 2s infinite;
@@ -232,7 +233,7 @@
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             max-width: 500px;
-            margin: 20px auto 40px;
+            margin: 0 auto 30px;
             transform: rotate(-2deg);
         }
         @keyframes bounce {
@@ -242,8 +243,7 @@
         .music-footer {
             width: 100%;
             max-width: 600px;
-            margin-top: auto;
-            margin-bottom: 20px;
+            margin-top: 20px;
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
@@ -289,13 +289,13 @@
             <div class="photo-placeholder"><img src="https://picsum.photos/400/400?random=14" alt="Memory 4"></div>
         </div>
 
-        <h1 class="bday-title">Happy Birthday Zizi! ✨</h1>
+        <h1 class="bday-title">Happy Birthday Zizi!✨</h1>
         <div class="bday-card">
-            <p style="font-size: 1.2rem; line-height: 1.6;">
+            <p style="font-size: 1.1rem; line-height: 1.6;">
                 Semoga hari spesialmu ini seindah senyummu. <br>
-                Teruslah bersinar dan bahagia selalu! 💖
+                Tetap tegar menghadapi dunia karena aku akan selalu disampingmu! Sekarang kamu sudah 17 tahun, bukan anak kecil lagi jadi jangan banyak manja ke orang lain. manja nya ke aku aja hehe <3
             </p>
-            <p style="font-style: italic; margin-top: 20px; color: #888;">- With love -</p>
+            <p style="font-style: italic; margin-top: 20px; color: #888;">- 2026 -</p>
         </div>
         
         <!-- Local MP3 Player -->
@@ -320,7 +320,7 @@
         const preloadImg = new Image();
         preloadImg.src = 'bin.png';
 
-        const triggerFinalState = () => {
+        const triggerFinalState = (fromMe = false) => {
             if (isFinal) return;
             isFinal = true;
 
@@ -334,7 +334,7 @@
             
             hImg.src = 'bin.png';
 
-            question.innerText = "I KNEW IT! ❤️";
+            question.innerText = fromMe ? "I KNEW IT! ❤️" : "The answer is:";
             question.style.transform = "translateY(-50px)";
 
             setTimeout(() => {
@@ -375,6 +375,10 @@
 
         haechan.addEventListener('click', () => {
             if (isFinal) return;
+            
+            // Update text to "Wrong answer"
+            question.innerText = "Wrong answer";
+            
             haechan.classList.add('moved');
             const rect = haechan.getBoundingClientRect();
             const randomX = Math.max(0, Math.floor(Math.random() * (window.innerWidth - rect.width)));
@@ -390,11 +394,11 @@
 
             question.style.transform = `translateY(-${(meScale - 1) * 100}px)`;
 
-            if (haechanScale < 0.25) triggerFinalState();
+            if (haechanScale < 0.25) triggerFinalState(false);
         });
 
         me.addEventListener('click', () => {
-            triggerFinalState();
+            triggerFinalState(true);
         });
     </script>
 </body>
