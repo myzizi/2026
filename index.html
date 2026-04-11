@@ -277,16 +277,16 @@
     <div id="birthday-screen" class="birthday-screen">
         <!-- Styled Photo Frames in Corners -->
         <div class="photo-frame frame-tl">
-            <div class="photo-placeholder"><img src="https://picsum.photos/400/400?random=11" alt="Memory 1"></div>
+            <div class="photo-placeholder"><img src="img/1.webp" alt="Memory 1"></div>
         </div>
         <div class="photo-frame frame-tr">
-            <div class="photo-placeholder"><img src="https://picsum.photos/400/400?random=12" alt="Memory 2"></div>
+            <div class="photo-placeholder"><img src="img/2.webp" alt="Memory 2"></div>
         </div>
         <div class="photo-frame frame-bl">
-            <div class="photo-placeholder"><img src="https://picsum.photos/400/400?random=13" alt="Memory 3"></div>
+            <div class="photo-placeholder"><img src="img/3.webp" alt="Memory 3"></div>
         </div>
         <div class="photo-frame frame-br">
-            <div class="photo-placeholder"><img src="https://picsum.photos/400/400?random=14" alt="Memory 4"></div>
+            <div class="photo-placeholder"><img src="img/4.webp" alt="Memory 4"></div>
         </div>
 
         <h1 class="bday-title">Happy Birthday Zizi!✨</h1>
@@ -316,9 +316,9 @@
         let meScale = 1;
         let isFinal = false;
 
-        // Preload bin.png
+        // Preload bin.webp
         const preloadImg = new Image();
-        preloadImg.src = 'bin.png';
+        preloadImg.src = 'bin.webp';
 
         const triggerFinalState = (fromMe = false) => {
             if (isFinal) return;
@@ -332,7 +332,7 @@
             haechan.style.top = '50%';
             haechan.style.transform = `translate(-50%, -50%) scale(${finalHScale})`;
             
-            hImg.src = 'bin.png';
+            hImg.src = 'bin.webp';
 
             question.innerText = fromMe ? "I KNEW IT! ❤️" : "The answer is:";
             question.style.transform = "translateY(-50px)";
